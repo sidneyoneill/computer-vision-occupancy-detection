@@ -1,101 +1,74 @@
-# Campus Occupancy Detection System
+# 🎓 Campus Occupancy Detection System
 
-## Project Overview
+A real-time, computer vision-based system for monitoring occupancy in university libraries and study spaces.  
+Developed as part of the **MDM3 module** at the University of Bristol, Engineering Mathematics.
 
-This repository contains a computer vision-based system for monitoring seat occupancy in university libraries and study spaces, developed as part of the MDM3 module at the University of Bristol Engineering Mathematics Course. The system uses a combination of background subtraction techniques and deep learning models to accurately detect and track seat occupancy in real-time.
+This repository contains a computer vision-based system for monitoring occupancy in university libraries and study spaces.  
+The system uses a combination of deep learning techniques to accurately detect and track occupancy in real-time.
 
-## Introduction to Computer Vision for Occupancy Monitoring
+---
 
-Computer vision offers powerful tools for understanding and analyzing space utilization without requiring physical sensors at each seat. Our approach combines traditional computer vision techniques with modern deep learning to create a robust, privacy-conscious monitoring system that provides valuable insights into how campus spaces are utilized.
+## 📸 Introduction to Computer Vision for Occupancy Monitoring
 
-### Key Features
+Computer vision offers powerful tools for understanding and analyzing space utilization without requiring physical sensors at each seat.  
+Our approach combines traditional computer vision techniques with modern deep learning to create a robust, privacy-conscious monitoring system that provides valuable insights into how campus spaces are utilized.
 
-- **Real-time occupancy detection** using multiple computer vision techniques
-- **Privacy-preserving** implementation that doesn't store identifiable images of individuals
-- **ROI (Region of Interest)** system for monitoring specific seats and desk areas
-- **Multi-method validation** to reduce false positives and increase accuracy
-- **Visual output** showing occupancy status across monitored areas
+---
 
-## Tracking and Counting Methodologies
+## 🔑 Key Features
 
-The system employs two primary approaches to detect seat occupancy:
+- 🎯 Real-time occupancy detection using multiple computer vision techniques  
+- 🔐 Privacy-preserving implementation that doesn't store identifiable images of individuals  
+- 🪑 ROI (Region of Interest) system for monitoring specific seats and desk areas  
+- 🌙 Image-enhancing techniques for improved detection in low lighting  
+- 📈 Kalman filter for sophisticated tracking of moving targets  
+- 🧠 Fine-tuned YOLO on a custom dataset for increased chair detection accuracy  
 
-1. **Background Subtraction Analysis**: Detects changes within defined ROIs by comparing current frames with an established baseline (empty) image.
-2. **Person Detection Validation**: Uses pre-trained YOLO models to validate occupancy by detecting people in chairs.
+---
 
-These methodologies work in tandem to provide high-accuracy detection while minimizing false positives from environmental changes.
+## 🪑 Seat Monitoring Methodology
 
-## Tracking Algorithms
+We use a **triple-check system** to determine whether a seat is occupied:
 
-Several specialized tracking and detection algorithms have been implemented:
+1. ✅ **Person Detection** — Identifies the presence of a person in the chair location  
+2. 🧳 **Desk Possessions** — Detects objects left on the desk surface  
+3. 🎒 **Chair Possessions** — Identifies belongings left on the chair (e.g. backpacks, jackets)
 
-- **MOG2 Background Subtraction**: Adapts to scene changes while detecting foreground objects.
-- **HSV-based Detection**: Analyzes color space changes to detect occupancy.
-- **Histogram-based Comparison**: Compares color distribution changes between baseline and current frames.
-- **Radial Mask with Gaussian Weighting**: Applies weighted importance to central areas of each ROI.
-- **Combined Approach**: Integrates multiple methods with a voting system for maximum accuracy.
+If **any one** of these conditions is met, the seat is classified as **occupied**.
 
-## Implementation Challenges and Solutions
+![Seat Monitoring Demo](assets/sid_video_3_trimmed.gif)
+---
 
-### Lighting Variations
+## 🧍 People Counting Methodology
 
-**Challenge**: Library lighting changes throughout the day, affecting detection accuracy.
+Effective people counting faces two primary challenges:
 
-**Solution**: Multiple baseline images for different lighting conditions and HSV color space analysis to reduce sensitivity to illumination changes.
+- 🎯 **Tracking moving targets**
+- 🔄 **Maintaining live, consistent counts without missing entries/exits**
 
-### Occlusion Issues
+To overcome this, we employ a **Kalman filter**, which predicts the future location of a detected person’s **centroid** in the next frame.  
+This improves the consistency of tracking and reduces errors from temporary occlusions or brief tracking loss.
 
-**Challenge**: People partially hidden behind monitors or other furniture.
+### 📘 What is a Kalman Filter?
 
-**Solution**: Dual-ROI system (chair and desk) to detect occupancy even when one area is partially occluded.
+A **Kalman filter** is an algorithm that uses a series of measurements observed over time — even if they contain noise or are incomplete — to produce more accurate estimates of unknown variables.  
+In our system, it predicts the **future position** of a detected person based on past movement, helping maintain consistent ID tracking between frames.
 
-### False Positives
 
-**Challenge**: Movement of chairs or temporary objects triggering false detections.
+![Tracking Demo](assets/oscar_track_vid_trimmed.gif)
 
-**Solution**: Multi-criteria validation requiring both background changes and person detection before confirming occupancy.
+---
 
-## Floor Plan Integration
+## ⚙️ Prerequisites
 
-The system integrates with floor plans to provide spatial context for occupancy data
+- Python 3.8+  
+- OpenCV 4.5+  
+- NumPy  
+- PyTorch (for YOLO models)  
 
-## Desk Monitoring System
+---
 
-### Initial Approach: Full Background Subtraction
-
-Our initial implementation used full-frame background subtraction, which faced several challenges:
-
-- High sensitivity to minor movements (papers shuffling, slight chair movements).
-- Difficulty adapting to gradual lighting changes.
-- Computational intensity for high-resolution video.
-
-### Pre-trained Model Integration
-
-To improve accuracy, we incorporated pre-trained YOLOv8 models:
-
-- **YOLOv8m** model fine-tuned on chair occupancy data.
-- Provides secondary validation of occupancy detected by background subtraction.
-- Reduces false positives by requiring person detection within chair ROIs.
-
-We also experimented with fine-tuning this model to work on specific library layouts.
-
-### Mixed Model with Gaussian Masking
-
-1. ROI-specific background subtraction with adaptive parameters.
-2. Gaussian weighted importance masks that prioritize central areas of ROIs.
-3. Pre-trained YOLO model validation for person detection.
-4. Temporal smoothing to prevent rapid oscillation between states.
-
-## Getting Started
-
-### Prerequisites
-
-- Python 3.8+
-- OpenCV 4.5+
-- NumPy
-- PyTorch (for YOLO models)
-
-### Installation
+## 🧪 Installation
 
 ```bash
 # Clone the repository
@@ -107,43 +80,3 @@ pip install -r requirements.txt
 
 # Download pre-trained models
 python download_models.py
-```
-
-### Usage
-
-1. **Prepare your environment**:
-   ```bash
-   python src/visualize_rois.py  # Visualize and verify ROIs
-   ```
-
-2. **Run background subtraction analysis**:
-   ```bash
-   python src/background_subtraction_combined.py
-   ```
-
-3. **Run the complete occupancy monitor**:
-   ```bash
-   python src/occupancy_monitor_tier1_improved.py
-   ```
-
-## Project Structure
-
-- `/annotations`: Contains JSON files defining ROIs for chairs and desks.
-- `/data`: Test images and videos for system evaluation.
-- `/models`: Pre-trained YOLO and custom models.
-- `/src`: Source code for all detection algorithms.
-- `/output`: Results and processed videos.
-
-## Documentation
-
-- [Manual ROI Labelling Guide](Manual_ROI_labelling.md)
-- [Data Collection Guide](Data_Collection.md)
-- [Project Overview](Project_Overview.md)
-
-## Contributors
-
-- University of Bristol MDM3 Team
-
-## License
-
-No License
