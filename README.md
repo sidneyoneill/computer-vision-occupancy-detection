@@ -1,3 +1,7 @@
+
+![Campus Occupancy Detection System](assets/banner.png)
+
+
 # 🎓 Campus Occupancy Detection System
 
 A real-time, computer vision-based system for monitoring occupancy in university libraries and study spaces.  
