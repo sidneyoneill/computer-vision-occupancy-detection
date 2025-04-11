@@ -84,3 +84,55 @@ pip install -r requirements.txt
 
 # Download pre-trained models
 python download_models.py
+
+
+## 💻 Usage
+
+### Step 1: Prepare your environment
+```bash
+python src/visualize_rois.py  # Visualize and verify ROIs
+```
+
+### Step 2: Run background subtraction analysis
+```bash
+python src/background_subtraction_combined.py
+```
+
+### Step 3: Run the full occupancy monitor
+```bash
+python src/occupancy_monitor_tier1_improved.py
+```
+
+---
+
+## 📁 Project Structure
+
+```bash
+/annotations        # JSON files defining ROIs for chairs and desks
+/data               # Test images and evaluation videos
+/models             # Pre-trained YOLO and custom models
+/src                # Source code for detection algorithms
+/output             # Results and processed visualisations
+```
+
+---
+
+## 📄 Documentation
+
+- 🖼️ Manual ROI Labelling Guide  
+- 🎥 Data Collection Guide  
+- 📊 Project Overview  
+
+---
+
+## 👨‍💻 Contributors
+
+University of Bristol **MDM3 Team**  
+Department of Engineering Mathematics
+
+---
+
+## 📜 License
+
+⚠️ This project is currently **not licensed** for distribution or commercial use.
+
